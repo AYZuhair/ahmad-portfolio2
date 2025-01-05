@@ -1,6 +1,5 @@
-import styled from "styled-components";
-import { Link } from "react-scroll";
 import React, { useState } from "react";
+import styled from "styled-components";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { motion } from "framer-motion";
 
@@ -28,11 +27,11 @@ const NavLinks = styled(motion.div)`
     width: 100%;
     background: ${(props) => props.theme.background};
     padding: 1rem;
-    display: ${(props) => (props.isOpen ? "flex" : "none")};
+    display: ${(props) => (props.$isOpen ? "flex" : "none")}; // Use transient prop
   }
 `;
 
-const NavLink = styled(Link)`
+const NavLink = styled.a`
   cursor: pointer;
   &:hover {
     color: ${(props) => props.theme.primary};
@@ -51,28 +50,26 @@ const MenuIcon = styled.div`
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const scrollToSection = (id) => {
+    const section = document.getElementById(id);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+      setIsOpen(false); // Close the mobile menu after clicking a link
+    }
+  };
+
   return (
     <Nav>
       <h1>Ahmad's Portfolio</h1>
       <MenuIcon onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <FaTimes /> : <FaBars />}
       </MenuIcon>
-      <NavLinks isOpen={isOpen}>
-        <NavLink to="about" smooth={true} duration={500}>
-          About
-        </NavLink>
-        <NavLink to="skills" smooth={true} duration={500}>
-          Skills
-        </NavLink>
-        <NavLink to="projects" smooth={true} duration={500}>
-          Projects
-        </NavLink>
-        <NavLink to="experience" smooth={true} duration={500}>
-          Experience
-        </NavLink>
-        <NavLink to="contact" smooth={true} duration={500}>
-          Contact
-        </NavLink>
+      <NavLinks $isOpen={isOpen}> {/* Use transient prop */}
+        <NavLink onClick={() => scrollToSection("about")}>About</NavLink>
+        <NavLink onClick={() => scrollToSection("skills")}>Skills</NavLink>
+        <NavLink onClick={() => scrollToSection("projects")}>Projects</NavLink>
+        <NavLink onClick={() => scrollToSection("experience")}>Experience</NavLink>
+        <NavLink onClick={() => scrollToSection("contact")}>Contact</NavLink>
       </NavLinks>
     </Nav>
   );
